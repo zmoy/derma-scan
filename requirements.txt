@@ -6,6 +6,5 @@ seaborn
 scikit-learn
 
 Pillow
-torch
 torchvision
 torchaudio
