@@ -8,3 +8,12 @@ scikit-learn
 Pillow
 torchvision
 torchaudio
+
+# For FastAPI back-end
+fastapi
+uvicorn
+python-multipart
+
+# For Streamlitfront-end
+streamlit
+requests
