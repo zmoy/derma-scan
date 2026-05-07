@@ -4,6 +4,7 @@ import requests
 from PIL import Image
 import pandas as pd
 import io
+import base64  # <-- NEW: Required to decode the heatmap image from the API
 
 # ==========================================
 # 1. Page Configuration & Setup
@@ -15,14 +16,14 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# API Endpoint (Make sure your FastAPI server is running on this URL)
+# API Endpoint
 API_URL = "http://127.0.0.1:8000/predict/"
 
 # ==========================================
 # 2. Sidebar (Information & Disclaimer)
 # ==========================================
 with st.sidebar:
-    st.image("https://cdn-icons-png.flaticon.com/512/3004/3004416.png", width=100) # Placeholder logo
+    st.image("https://cdn-icons-png.flaticon.com/512/3004/3004416.png", width=100)
     st.title("About Derma-Scan")
     st.write("This AI tool analyzes dermatological images to classify 7 different types of skin lesions using a fine-tuned ResNet34 model.")
     
@@ -47,42 +48,35 @@ st.write("Upload a high-resolution, close-up image of a skin mole or lesion to g
 uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
 
 if uploaded_file is not None:
-    # Create two columns for a clean layout: Left for Image, Right for Results
+    # Create two columns for a clean layout
     col1, col2 = st.columns(2)
     
     with col1:
         st.markdown("### Uploaded Image")
-        # Read the file and display it
         image = Image.open(uploaded_file)
-        st.image(image, caption="Uploaded Lesion", use_container_width=True)
+        st.image(image, caption="Original Lesion", use_container_width=True)
         
-        # The 'Analyze' button
         analyze_button = st.button("🔍 Analyze Image", type="primary", use_container_width=True)
 
     with col2:
         st.markdown("### AI Analysis Results")
         
         if analyze_button:
-            # Show a loading spinner while waiting for the API
-            with st.spinner('Analyzing image with ResNet34...'):
+            with st.spinner('Analyzing image and generating Grad-CAM explanation...'):
                 try:
-                    # Prepare the file for the POST request
-                    # We reset the file pointer to the beginning before sending
+                    # Prepare and send the file to the FastAPI backend
                     uploaded_file.seek(0)
                     files = {"file": (uploaded_file.name, uploaded_file, uploaded_file.type)}
-                    
-                    # Make the HTTP POST request to our FastAPI backend
                     response = requests.post(API_URL, files=files)
                     
                     if response.status_code == 200:
                         result = response.json()
                         
                         if result["status"] == "success":
-                            # 1. Display the Main Prediction
+                            # --- 1. Display Main Prediction ---
                             pred_class = result["prediction"]
                             confidence = result["confidence"]
                             
-                            # Use different visual alerts based on the diagnosis
                             if result["is_melanoma"]:
                                 st.error(f"🚨 **CRITICAL ALERT: {pred_class}**")
                                 st.error(f"Confidence: **{confidence}%**")
@@ -93,18 +87,28 @@ if uploaded_file is not None:
                                 st.warning(f"⚠️ **Prediction: {pred_class}**")
                                 st.warning(f"Confidence: **{confidence}%**")
                             
-                            # 2. Display the Probabilities Chart
+                            # --- 2. Display Probability Chart ---
                             st.markdown("#### Probability Distribution")
                             probs = result["all_probabilities"]
-                            
-                            # Convert dictionary to Pandas DataFrame for Streamlit bar chart
-                            # Sort by highest probability for better readability
                             df_probs = pd.DataFrame(list(probs.items()), columns=['Diagnosis', 'Probability'])
                             df_probs = df_probs.sort_values(by='Probability', ascending=True)
-                            
-                            # Draw horizontal bar chart
                             st.bar_chart(df_probs.set_index('Diagnosis'))
                             
+                            # --- 3. Display Explainable AI (Grad-CAM) ---
+                            # Check if the heatmap data was sent by the API
+                            if "heatmap_base64" in result:
+                                st.markdown("---")
+                                st.markdown("### 🧠 AI Explanation (Grad-CAM)")
+                                st.info("This heatmap reveals how the AI made its decision. **Red zones** indicate the visual features that most strongly influenced the final diagnosis.")
+                                
+                                # Decode the base64 string back into raw image bytes
+                                heatmap_bytes = base64.b64decode(result["heatmap_base64"])
+                                # Convert bytes back into a PIL Image
+                                heatmap_image = Image.open(io.BytesIO(heatmap_bytes))
+                                
+                                # Display the heatmap
+                                st.image(heatmap_image, caption="Grad-CAM Thermal Map", use_container_width=True)
+                                
                         else:
                             st.error(f"API Error: {result.get('message', 'Unknown error')}")
                             

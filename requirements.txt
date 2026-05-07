@@ -17,3 +17,7 @@ python-multipart
 # For Streamlitfront-end
 streamlit
 requests
+
+# XAI
+opencv-python
+numpy
