@@ -1,6 +1,7 @@
 # Virtual environments
 venv/
 env/
+.venv/
 
 # Data and model folders (too heavy for Git)
 data/

@@ -1,0 +1,11 @@
+# .dockerignore
+.venv
+venv/
+env/
+__pycache__/
+*.pyc
+.git/
+data/
+notebooks/
+*.ipynb
+.DS_Store

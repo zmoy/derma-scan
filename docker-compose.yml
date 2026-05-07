@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  # The Backend Service
+  api:
+    build:
+      context: . # Context is root so it can access both /api and /models folders
+      dockerfile: api/Dockerfile
+    ports:
+      - "8000:8000" # Map host port 8000 to container port 8000
+    networks:
+      - derma-network
+
+  # The Frontend Service
+  frontend:
+    build:
+      context: ./frontend # Context is strictly the frontend folder
+      dockerfile: Dockerfile
+    ports:
+      - "8501:8501" # Map host port 8501 to container port 8501
+    environment:
+      # Tell Streamlit to talk to the 'api' service over Docker's internal network
+      - API_URL=http://api:8000/predict/
+    depends_on:
+      - api # Ensure the API starts before the frontend
+    networks:
+      - derma-network
+
+# Define a custom bridge network for the containers to communicate securely
+networks:
+  derma-network:
+    driver: bridge

@@ -4,7 +4,8 @@ import requests
 from PIL import Image
 import pandas as pd
 import io
-import base64  # <-- NEW: Required to decode the heatmap image from the API
+import base64 
+import os
 
 # ==========================================
 # 1. Page Configuration & Setup

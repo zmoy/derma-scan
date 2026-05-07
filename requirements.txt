@@ -20,4 +20,3 @@ requests
 
 # XAI
 opencv-python
-numpy
