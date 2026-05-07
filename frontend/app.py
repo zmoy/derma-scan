@@ -18,7 +18,8 @@ st.set_page_config(
 )
 
 # API Endpoint
-API_URL = "http://127.0.0.1:8000/predict/"
+# API_URL = "http://127.0.0.1:8000/predict/"
+API_URL = os.getenv("API_URL", "http://127.0.0.1:8000/predict/")
 
 # ==========================================
 # 2. Sidebar (Information & Disclaimer)
@@ -55,9 +56,9 @@ if uploaded_file is not None:
     with col1:
         st.markdown("### Uploaded Image")
         image = Image.open(uploaded_file)
-        st.image(image, caption="Original Lesion", use_container_width=True)
+        st.image(image, caption="Original Lesion", width="stretch")
         
-        analyze_button = st.button("🔍 Analyze Image", type="primary", use_container_width=True)
+        analyze_button = st.button("🔍 Analyze Image", type="primary", width="stretch")
 
     with col2:
         st.markdown("### AI Analysis Results")
@@ -108,7 +109,7 @@ if uploaded_file is not None:
                                 heatmap_image = Image.open(io.BytesIO(heatmap_bytes))
                                 
                                 # Display the heatmap
-                                st.image(heatmap_image, caption="Grad-CAM Thermal Map", use_container_width=True)
+                                st.image(heatmap_image, caption="Grad-CAM Thermal Map", width="stretch")
                                 
                         else:
                             st.error(f"API Error: {result.get('message', 'Unknown error')}")
