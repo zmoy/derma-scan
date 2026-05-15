@@ -37,7 +37,7 @@ BENIGN_SAMPLES = [
 # 2. Sidebar (Information & Disclaimer)
 # ==========================================
 with st.sidebar:
-    st.image("https://cdn-icons-png.flaticon.com/512/3004/3004416.png", width=100)
+    st.image("logo.png", width=100)
     st.title("About Derma-Scan")
     st.write("This AI tool analyzes dermatological images to classify 7 different types of skin lesions using a fine-tuned ResNet34 model.")
     
