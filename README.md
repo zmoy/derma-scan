@@ -52,6 +52,10 @@ Thanks to Docker, launching the complete architecture requires only a single com
 3. Access the web app:
    Open your browser and navigate to http://localhost:8501
 
+⚡ One-Click Quick Test
+Don't have a dermoscopic image on hand to test the application? No problem.
+The web interface includes a built-in Quick Test feature. Simply click the "Melanoma Case" or "Benign Case" buttons, and the app will automatically select a curated sample image from the dataset and run the full end-to-end analysis instantly.
+
 (The FastAPI backend is accessible in parallel at http://localhost:8000/docs to directly test the endpoints).
 
 # ⚠️ Medical Disclaimer
