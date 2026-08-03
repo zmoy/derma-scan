@@ -6,6 +6,11 @@
 ![Streamlit](https://img.shields.io/badge/Streamlit-Frontend-FF4B4B.svg)
 ![Docker](https://img.shields.io/badge/Docker-Containerization-2496ED.svg)
 
+## 🌐 Live Demo
+Experience the application instantly without any local setup. A streamlined, monolithic version of this project has been deployed on Streamlit Community Cloud for public demonstration.
+
+👉 **[Try Lucid Derma-Scan AI Live Here](https://lucid-derma-scan.streamlit.app/)**
+
 ## 📖 Project Overview
 **Lucid Derma-Scan** is a Full-Stack Artificial Intelligence Proof of Concept (PoC) designed for the medical field. Its goal is to act as a **triage tool** to help detect melanoma and classify 6 other types of skin lesions from dermoscopic images.
 
