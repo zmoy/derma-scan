@@ -9,9 +9,9 @@ WORKDIR /app
 COPY api/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the api code and the models directory into the container
+# Copy the api code and the fine-tuned weights (versioned in frontend/, models/ is git-ignored)
 COPY api/ ./api/
-COPY models/ ./models/
+COPY frontend/resnet34_derma_focal_v3.pth ./models/resnet34_derma_focal_v3.pth
 
 # Change working directory to the api folder for execution
 WORKDIR /app/api

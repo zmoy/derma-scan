@@ -8,10 +8,19 @@ import io
 import cv2
 import numpy as np
 import base64
+import os
+from pathlib import Path
 
 # 1. Configuration & Constants
 NUM_CLASSES = 7
-MODEL_PATH = "../models/resnet34_derma_focal_v3.pth" # Path from api/ to models/
+# Weights lookup: $MODEL_PATH, then models/ (Docker image), then frontend/ (versioned copy in the repo)
+_HERE = Path(__file__).resolve().parent
+_CANDIDATES = [
+    os.getenv("MODEL_PATH"),
+    _HERE.parent / "models" / "resnet34_derma_focal_v3.pth",
+    _HERE.parent / "frontend" / "resnet34_derma_focal_v3.pth",
+]
+MODEL_PATH = next((str(p) for p in _CANDIDATES if p and Path(p).exists()), str(_CANDIDATES[1]))
 
 # Label mapping for human-readable output
 LABEL_MAP = {

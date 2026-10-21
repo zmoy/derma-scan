@@ -1,4 +1,8 @@
-streamlit
-requests
+--extra-index-url https://download.pytorch.org/whl/cpu
+streamlit>=1.50
+torch
+torchvision
 Pillow
 pandas
+numpy
+opencv-python-headless
